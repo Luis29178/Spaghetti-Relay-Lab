@@ -30,7 +30,7 @@ int Server::init(uint16_t port)
 		return SETUP_ERROR;
 	}
 
-	ComSocket = accept(listenSocket, NULL, NULL);
+	ComSocket = accept(listenSocket, NULL, NULL); // Code will wait for a responce from a client here 
 	if (ComSocket == INVALID_SOCKET)
 	{
 		return SETUP_ERROR;
@@ -54,6 +54,7 @@ int Server::readMessage(char* buffer, int32_t size)
 }
 int Server::sendMessage(char* data, int32_t length)
 {
+	// TODO: Implement
 	return SHUTDOWN;
 }
 void Server::stop()
