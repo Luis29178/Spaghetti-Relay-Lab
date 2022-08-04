@@ -45,4 +45,6 @@ inline int getError()
 // Helper function for sending TCP data.
 int sendTcpData(SOCKET skSocket, const char *data, uint16_t length);
 
+int reciveTcpData(SOCKET s, char* buffer, int length);
+
 

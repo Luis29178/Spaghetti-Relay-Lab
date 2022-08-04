@@ -17,3 +17,20 @@ int sendTcpData(SOCKET skSocket, const char *data, uint16_t length)
 
 	return bytesSent;
 }
+
+int reciveTcpData(SOCKET s, char* buffer, int length)
+{
+	int total = 0;
+
+	do
+	{
+		int ret = recv(s, buffer + total, length - total, 0);
+		if (ret < 1)
+			return ret;
+		else
+			total += ret;
+
+	} while (total < length);
+
+	return total;
+}

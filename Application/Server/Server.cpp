@@ -41,7 +41,7 @@ int Server::init(uint16_t port)
 int Server::readMessage(char* buffer, int32_t size)
 {
 	
-	result = sendTcpData(ComSocket, (char*)buffer, size);
+	result = reciveTcpData(ComSocket, (char*)buffer, size);
 	if ((result == SOCKET_ERROR) || (result == 0))
 	{
 		// WSAGetLastError() retrives the error in witch result termintated with
@@ -54,7 +54,17 @@ int Server::readMessage(char* buffer, int32_t size)
 }
 int Server::sendMessage(char* data, int32_t length)
 {
-	// TODO: Implement
+	memset(data, 0, length);
+	strcpy(data, "I'm a message from the Server");
+
+	result = sendTcpData(ComSocket, data, length);
+	if ((result == SOCKET_ERROR) || (result == 0))
+	{
+
+		int error = WSAGetLastError();
+		return MESSAGE_ERROR;
+
+	}
 	return SHUTDOWN;
 }
 void Server::stop()

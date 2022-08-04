@@ -1,10 +1,15 @@
-#include "Client.h"
+#define _CRT_SECURE_NO_WARNINGS                 // turns of deprecated warnings
+#define _WINSOCK_DEPRECATED_NO_WARNINGS			 // turns of deprecated warnings for winsock
 
+
+#include "Client.h"
+#include <winsock2.h>
+#pragma comment(lib,"Ws2_32.lib")
 
 
 
 SOCKET ComSocket;
-
+int result;
 int Client::init(uint16_t port, char* address)
 {
 	ComSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -30,13 +35,35 @@ int Client::init(uint16_t port, char* address)
 }
 int Client::readMessage(char* buffer, int32_t size)
 {
-	return SHUTDOWN;
+	result = reciveTcpData(ComSocket, (char*)buffer, size);
+	if ((result == SOCKET_ERROR) || (result == 0))
+	{
+		// WSAGetLastError() retrives the error in witch result termintated with
+		int error = WSAGetLastError();
+		return MESSAGE_ERROR;
+
+	}
+
+	return SUCCESS;
 }
 int Client::sendMessage(char* data, int32_t length)
 {
-	return SHUTDOWN;
+	memset(data, 0, length);
+	strcpy(data, "I'm a message from the client");
+
+	result = sendTcpData(ComSocket, data, length);
+	if ((result == SOCKET_ERROR) || (result == 0))
+	{
+
+		int error = WSAGetLastError();
+		return MESSAGE_ERROR;
+
+	}
+
+	return SUCCESS;
 }
 void Client::stop()
 {
-
+	shutdown(ComSocket, SD_BOTH);
+	closesocket(ComSocket);
 }
