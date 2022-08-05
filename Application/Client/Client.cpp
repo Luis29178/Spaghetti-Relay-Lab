@@ -48,9 +48,7 @@ int Client::readMessage(char* buffer, int32_t size)
 }
 int Client::sendMessage(char* data, int32_t length)
 {
-	memset(data, 0, length);
-	strcpy(data, "I'm a message from the client");
-
+	
 	result = sendTcpData(ComSocket, data, length);
 	if ((result == SOCKET_ERROR) || (result == 0))
 	{

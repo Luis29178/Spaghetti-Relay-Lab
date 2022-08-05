@@ -54,8 +54,7 @@ int Server::readMessage(char* buffer, int32_t size)
 }
 int Server::sendMessage(char* data, int32_t length)
 {
-	memset(data, 0, length);
-	strcpy(data, "I'm a message from the Server");
+
 
 	result = sendTcpData(ComSocket, data, length);
 	if ((result == SOCKET_ERROR) || (result == 0))
@@ -65,7 +64,7 @@ int Server::sendMessage(char* data, int32_t length)
 		return MESSAGE_ERROR;
 
 	}
-	return SHUTDOWN;
+	return SUCCESS;
 }
 void Server::stop()
 {
