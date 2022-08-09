@@ -40,8 +40,14 @@ int Server::init(uint16_t port)
 }
 int Server::readMessage(char* buffer, int32_t size)
 {
-	
-	result = reciveTcpData(ComSocket, (char*)buffer, size);
+
+	int len = recv(ComSocket, buffer, size, 0);
+	if ((len == SOCKET_ERROR) || (len == 0))
+	{
+		return MESSAGE_ERROR;
+	}
+
+	result = reciveTcpData(ComSocket, (char*)buffer, len);
 	if ((result == SOCKET_ERROR) || (result == 0))
 	{
 		// WSAGetLastError() retrives the error in witch result termintated with
@@ -54,9 +60,13 @@ int Server::readMessage(char* buffer, int32_t size)
 }
 int Server::sendMessage(char* data, int32_t length)
 {
+	int len = send(ComSocket, (const char*)data, length, 0);
+	if ((len == SOCKET_ERROR) || (len == 0))
+	{
+		return MESSAGE_ERROR;
+	}
 
-
-	result = sendTcpData(ComSocket, data, length);
+	result = sendTcpData(ComSocket, data, len);
 	if ((result == SOCKET_ERROR) || (result == 0))
 	{
 
