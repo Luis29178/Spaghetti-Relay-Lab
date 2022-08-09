@@ -33,7 +33,7 @@ int Server::init(uint16_t port)
 	ComSocket = accept(listenSocket, NULL, NULL); // Code will wait for a responce from a client here 
 	if (ComSocket == INVALID_SOCKET)
 	{
-		return SETUP_ERROR;
+		return CONNECT_ERROR;
 	}
 
 	return SUCCESS;
@@ -44,7 +44,11 @@ int Server::readMessage(char* buffer, int32_t size)
 	int len = recv(ComSocket, buffer, size, 0);
 	if ((len == SOCKET_ERROR) || (len == 0))
 	{
-		return MESSAGE_ERROR;
+		return DISCONNECT;
+	}
+	if (len > size)
+	{
+		return PARAMETER_ERROR;
 	}
 
 	result = reciveTcpData(ComSocket, (char*)buffer, len);
@@ -63,7 +67,11 @@ int Server::sendMessage(char* data, int32_t length)
 	int len = send(ComSocket, (const char*)data, length, 0);
 	if ((len == SOCKET_ERROR) || (len == 0))
 	{
-		return MESSAGE_ERROR;
+		return DISCONNECT;
+	}
+	if (len < 0 || len >255)
+	{
+		return PARAMETER_ERROR;
 	}
 
 	result = sendTcpData(ComSocket, data, len);

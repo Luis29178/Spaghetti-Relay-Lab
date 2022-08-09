@@ -15,7 +15,6 @@ int Client::init(uint16_t port, char* address)
 	ComSocket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (ComSocket == INVALID_SOCKET)
 	{
-		
 		return SETUP_ERROR;
 	}
 	sockaddr_in serverAddr; 
@@ -40,8 +39,13 @@ int Client::readMessage(char* buffer, int32_t size)
 	 int len = recv(ComSocket, buffer , size, 0);
 	 if ((len == SOCKET_ERROR) || (len == 0))
 	 {
-		 return MESSAGE_ERROR;
+		 return DISCONNECT;
 	 }
+	 if (len > size)
+	 {
+		 return PARAMETER_ERROR;
+	 }
+
 	
 	result = reciveTcpData(ComSocket, (char*)buffer,len);
 	if ((result == SOCKET_ERROR) || (result == 0))
@@ -57,7 +61,11 @@ int Client::sendMessage(char* data, int32_t length)
 	int len = send(ComSocket, (const char*)data, length, 0);
 	if ((len == SOCKET_ERROR) || (len == 0))
 	{
-		return MESSAGE_ERROR;
+		return DISCONNECT;
+	}
+	if (len > length || len < 0)
+	{
+		return PARAMETER_ERROR;
 	}
 
 
